@@ -1,4 +1,7 @@
 package com.aues.repositories;
 
-public interface PayementRepository {
+import com.aues.entites.Payement;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface PayementRepository extends JpaRepository<Payement, Integer> {
 }
