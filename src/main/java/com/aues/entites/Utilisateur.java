@@ -1,7 +1,6 @@
 package com.aues.entites;
 
 import jakarta.persistence.*;
-
 import java.io.Serializable;
 
 @Entity
@@ -15,7 +14,6 @@ public class Utilisateur implements Serializable {
     private String adresse;
     private String telephone;
     private String motDePasse;
-
 
     @Enumerated(EnumType.STRING)
     private Role role; // ADMINISTRATEUR ou CLIENT
@@ -68,6 +66,4 @@ public class Utilisateur implements Serializable {
     public void setRole(Role role) {
         this.role = role;
     }
-    
 }
-

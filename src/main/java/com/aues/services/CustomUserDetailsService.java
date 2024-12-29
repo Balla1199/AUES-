@@ -19,12 +19,18 @@ public class CustomUserDetailsService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String telephone) throws UsernameNotFoundException {
         Utilisateur utilisateur = utilisateurRepository.findByTelephone(telephone)
-                .orElseThrow(() -> new UsernameNotFoundException("Utilisateur non trouvé"));
-
+                .orElseThrow(() -> new UsernameNotFoundException("Utilisateur non trouvé avec le téléphone : " + telephone));
+    
+        System.out.println("Utilisateur trouvé : " + utilisateur.getNom());
+        System.out.println("Mot de passe haché : " + utilisateur.getMotDePasse());
+        System.out.println("Rôle : " + utilisateur.getRole());
+    
         return User.builder()
                 .username(utilisateur.getTelephone())
                 .password(utilisateur.getMotDePasse())
                 .roles(utilisateur.getRole().name())
                 .build();
     }
+    
+    
 }

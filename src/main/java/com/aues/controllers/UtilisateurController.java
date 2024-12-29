@@ -6,6 +6,7 @@ import com.aues.services.UtilisateurService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -19,11 +20,8 @@ public class UtilisateurController {
 
     // Créer un nouveau client (accessible uniquement par l'administrateur)
     @PostMapping("/clients")
-    public ResponseEntity<Utilisateur> creerClient(@RequestBody Utilisateur utilisateur, @RequestHeader("Role") Role role) {
-        if (role != Role.ADMINISTRATEUR) {
-            return new ResponseEntity<>(HttpStatus.FORBIDDEN); // Seul l'administrateur peut créer un client
-        }
-
+    @PreAuthorize("hasRole('ADMINISTRATEUR')")
+    public ResponseEntity<Utilisateur> creerClient(@RequestBody Utilisateur utilisateur) {
         utilisateur.setRole(Role.CLIENT); // Forcer le rôle CLIENT
         Utilisateur nouveauClient = utilisateurService.ajouterUtilisateur(utilisateur);
         return new ResponseEntity<>(nouveauClient, HttpStatus.CREATED);
