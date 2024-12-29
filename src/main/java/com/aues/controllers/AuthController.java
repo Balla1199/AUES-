@@ -1,5 +1,5 @@
+package com.aues.controllers;
 
-/* package com.aues.controllers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -7,6 +7,10 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
+
+import com.aues.DTO.LoginRequest;
+import com.aues.entites.JwtResponse;
+import com.aues.repositories.JwtUtil;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -16,18 +20,24 @@ public class AuthController {
     private AuthenticationManager authenticationManager;
 
     @Autowired
-    //private main.java.com.aues.repositories.JwtUtil jwtUtil;
+    private JwtUtil jwtUtil; // Injection correcte de JwtUtil
 
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest) {
+    public ResponseEntity<JwtResponse> login(@RequestBody LoginRequest loginRequest) {
+        String telephone = loginRequest.getTelephone();
+        String motDePasse = loginRequest.getMotDePasse();
+
+        // Authentification
         Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(loginRequest.getTelephone(), loginRequest.getMotDePasse())
+                new UsernamePasswordAuthenticationToken(telephone, motDePasse)
         );
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
-        String jwt = jwtUtil.generateToken(loginRequest.getTelephone());
+        // Génération du token JWT
+        String jwt = jwtUtil.generateToken(telephone);
 
-        return ResponseEntity.ok(new main.java.com.aues.entites.JwtResponse(jwt));
+        // Retourne la réponse avec le token
+        return ResponseEntity.ok(new JwtResponse(jwt));
     }
-} */
+}
