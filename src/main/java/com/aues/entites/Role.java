@@ -1,4 +1,6 @@
 package com.aues.entites;
 
-public enum Role {admin,client
+public enum Role {
+    ADMINISTRATEUR,
+    CLIENT
 }
