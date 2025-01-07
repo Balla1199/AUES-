@@ -1,64 +1,70 @@
 package com.aues.controllers;
 
+import com.aues.DTO.AuthenticationDTO;
 import com.aues.entites.Role;
 import com.aues.entites.Utilisateur;
+import com.aues.repositories.UtilisateurRepository;
+import com.aues.securite.JwtService;
 import com.aues.services.UtilisateurService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
+import java.util.Map;
 
 @RestController
-@RequestMapping("/api/utilisateurs")
+//@RequestMapping("/api")
 public class UtilisateurController {
 
+    private final UtilisateurService utilisateurService;
+    private final JwtService jwtService;
+    private final AuthenticationManager authenticationManager;
+    private final BCryptPasswordEncoder bCryptPasswordEncoder;
+
     @Autowired
-    private UtilisateurService utilisateurService;
-
-    // Créer un nouveau client (accessible uniquement par l'administrateur)
-    @PostMapping("/clients")
-    public ResponseEntity<Utilisateur> creerClient(@RequestBody Utilisateur utilisateur, @RequestHeader("Role") Role role) {
-        if (role != Role.ADMINISTRATEUR) {
-            return new ResponseEntity<>(HttpStatus.FORBIDDEN); // Seul l'administrateur peut créer un client
-        }
-
-        utilisateur.setRole(Role.CLIENT); // Forcer le rôle CLIENT
-        Utilisateur nouveauClient = utilisateurService.ajouterUtilisateur(utilisateur);
-        return new ResponseEntity<>(nouveauClient, HttpStatus.CREATED);
+    public UtilisateurController(UtilisateurService utilisateurService, JwtService jwtService, AuthenticationManager authenticationManager, BCryptPasswordEncoder bCryptPasswordEncoder) {
+        this.utilisateurService = utilisateurService;
+        this.jwtService = jwtService;
+        this.authenticationManager = authenticationManager;
+        this.bCryptPasswordEncoder = bCryptPasswordEncoder;
     }
 
-    // Modifier un client (accessible uniquement par l'administrateur)
-    @PutMapping("/clients/{id}")
-    public ResponseEntity<Utilisateur> modifierClient(@PathVariable Integer id, @RequestBody Utilisateur utilisateurDetails, @RequestHeader("Role") Role role) {
-        if (role != Role.ADMINISTRATEUR) {
-            return new ResponseEntity<>(HttpStatus.FORBIDDEN); // Seul l'administrateur peut modifier un client
+    @PostMapping("/connexion")
+    public ResponseEntity<Map<String, String>> connexion(@RequestBody AuthenticationDTO authenticationDTO) {
+        Authentication authenticate = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(authenticationDTO.username(), authenticationDTO.password())
+        );
+
+        if (authenticate.isAuthenticated()) {
+            Map<String, String> jwt = jwtService.generate(authenticationDTO.username());
+            return new ResponseEntity<>(jwt, HttpStatus.OK);
         }
 
-        Utilisateur utilisateurModifie = utilisateurService.modifierUtilisateur(id, utilisateurDetails);
-        return new ResponseEntity<>(utilisateurModifie, HttpStatus.OK);
+        return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
     }
 
-    // Supprimer un client (accessible uniquement par l'administrateur)
-    @DeleteMapping("/clients/{id}")
-    public ResponseEntity<Void> supprimerClient(@PathVariable Integer id, @RequestHeader("Role") Role role) {
-        if (role != Role.ADMINISTRATEUR) {
-            return new ResponseEntity<>(HttpStatus.FORBIDDEN); // Seul l'administrateur peut supprimer un client
+    @PostMapping("/inscrire")
+    public ResponseEntity<String> inscrire(@RequestBody Utilisateur utilisateur) {
+
+        // Récupérer l'utilisateur connecté
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+
+        // Vérifier si l'utilisateur connecté est un administrateur
+        Utilisateur administrateur = utilisateurService.loadUserByUsername(userDetails.getUsername());
+        if (administrateur.getRole() != Role.ADMINISTRATEUR) {
+            return new ResponseEntity<>("Vous n'êtes pas autorisé à effectuer cette action.", HttpStatus.FORBIDDEN);
         }
 
-        utilisateurService.supprimerUtilisateur(id);
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-    }
-
-    // Lister tous les clients (accessible uniquement par l'administrateur)
-    @GetMapping("/clients")
-    public ResponseEntity<List<Utilisateur>> listerClients(@RequestHeader("Role") Role role) {
-        if (role != Role.ADMINISTRATEUR) {
-            return new ResponseEntity<>(HttpStatus.FORBIDDEN); // Seul l'administrateur peut voir les clients
-        }
-
-        List<Utilisateur> clients = utilisateurService.listerUtilisateursParRole(Role.CLIENT);
-        return new ResponseEntity<>(clients, HttpStatus.OK);
+        utilisateur.setPassword(bCryptPasswordEncoder.encode(utilisateur.getPassword()));
+        utilisateurService.ajouterUtilisateur(utilisateur);
+        return new ResponseEntity<>("Utilisateur inscrit avec succès.", HttpStatus.CREATED);
     }
 }

@@ -1,51 +1,41 @@
 package com.aues.services;
 
-import com.aues.entites.Role;
 import com.aues.entites.Utilisateur;
 import com.aues.repositories.UtilisateurRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
+import java.util.Optional;
 
 @Service
-public class UtilisateurService {
+public class UtilisateurService implements UserDetailsService {
 
-    @Autowired
-    private UtilisateurRepository utilisateurRepository;
+    private final UtilisateurRepository utilisateurRepository;
 
-    // Ajouter un utilisateur
+    public UtilisateurService(UtilisateurRepository utilisateurRepository) {
+        this.utilisateurRepository = utilisateurRepository;
+    }
+
+    @Override
+    public Utilisateur loadUserByUsername(String username) throws UsernameNotFoundException {
+        return utilisateurRepository.findByTelephone(username)
+                .orElseThrow(() -> new UsernameNotFoundException("Utilisateur non trouvé avec le numéro de téléphone : " + username));
+    }
+
+    // Méthode pour ajouter un utilisateur
     public Utilisateur ajouterUtilisateur(Utilisateur utilisateur) {
-        return utilisateurRepository.save(utilisateur);
-    }
+        Optional<Utilisateur> optional = utilisateurRepository.findByTelephone(utilisateur.getTelephone());
 
-    // Modifier un utilisateur
-    public Utilisateur modifierUtilisateur(Integer id, Utilisateur utilisateurDetails) {
-        Utilisateur utilisateur = utilisateurRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Utilisateur non trouvé"));
-
-        utilisateur.setNom(utilisateurDetails.getNom());
-        utilisateur.setAdresse(utilisateurDetails.getAdresse());
-        utilisateur.setTelephone(utilisateurDetails.getTelephone());
-        utilisateur.setMotDePasse(utilisateurDetails.getMotDePasse());
-        utilisateur.setRole(utilisateurDetails.getRole());
+        if (optional.isPresent()) {
+            throw new IllegalArgumentException("L'utilisateur avec le téléphone " + utilisateur.getTelephone() + " existe déjà.");
+        }
 
         return utilisateurRepository.save(utilisateur);
     }
 
-    // Supprimer un utilisateur
-    public void supprimerUtilisateur(Integer id) {
-        utilisateurRepository.deleteById(id);
-    }
 
-    // Lister tous les utilisateurs
-    public List<Utilisateur> listerUtilisateurs() {
-        return utilisateurRepository.findAll();
-    }
+    // Autres méthodes comme la mise à jour et la suppression peuvent être ajoutées
 
-    // Lister les utilisateurs par rôle
-    public List<Utilisateur> listerUtilisateursParRole(Role role) {
-        return utilisateurRepository.findByRole(role);
-    }
+
 }
-

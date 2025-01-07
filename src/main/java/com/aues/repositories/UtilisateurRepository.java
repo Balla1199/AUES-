@@ -1,4 +1,5 @@
 package com.aues.repositories;
+
 import com.aues.entites.Utilisateur;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
@@ -10,5 +11,5 @@ import java.util.Optional;
 public interface UtilisateurRepository extends JpaRepository<Utilisateur, Integer> {
     List<Utilisateur> findByRole(Role role); // Recherche par rôle
     Optional<Utilisateur> findByTelephone(String telephone);
-
+    boolean existsByTelephone(String telephone);
 }
