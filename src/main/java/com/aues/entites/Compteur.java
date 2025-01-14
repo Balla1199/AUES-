@@ -13,10 +13,16 @@ public class Compteur {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     public int id;
-    public String numero;
+
+    @Column(name = "Numero", unique = true)
+    private String code;
+
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     public TypeStatut statut=TypeStatut.Inactive;
+
+    @Column(name = "Tableau", nullable = false)
+    public Double CpteurChiffre;
 
     @OneToMany(mappedBy = "compteur", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference
@@ -26,9 +32,9 @@ public class Compteur {
 
     }
 
-    public Compteur(int id, String numero, TypeStatut statut, List<Releve> releve) {
+    public Compteur(int id, String code, TypeStatut statut, List<Releve> releve) {
         this.id = id;
-        this.numero = numero;
+        this.code = code;
         this.statut = statut;
         this.releve = releve;
     }
@@ -41,12 +47,20 @@ public class Compteur {
         this.id = id;
     }
 
-    public String getNumero() {
-        return numero;
+    public String getCode() {
+        return code;
     }
 
-    public void setNumero(String numero) {
-        this.numero = numero;
+    public Double getCpteurChiffre() {
+        return CpteurChiffre;
+    }
+
+    public void setCpteurChiffre(Double cpteurChiffre) {
+        this.CpteurChiffre = cpteurChiffre;
+    }
+
+    public void setCode(String code) {
+        this.code = code;
     }
 
     public TypeStatut getStatut() {

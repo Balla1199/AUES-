@@ -30,8 +30,8 @@ public class PayementService implements PayementInterf {
         if (!errors.isEmpty()) {
             throw new IllegalArgumentException("Erreur de validation : " + String.join(", ", errors));
         }
-        Integer sumTotal = 0;
-        Integer reste = 0;
+        Long sumTotal = 0L;
+        Long reste = 0L;
         Optional<Facture> optionalFacture = factureRepository.findById(payementDto.getIdFact());
         if (optionalFacture.isEmpty()) {
             throw new RuntimeException("Facture non trouvée pour l'ID spécifié.");
@@ -48,7 +48,7 @@ public class PayementService implements PayementInterf {
         if (payementDto.getMode() == ModePayement.physique) {
             if (payementDto.getMontant() >= sumTotal) {
                 // Paiement complet
-                facture.setMontantTotal(0);
+                facture.setMontantTotal(0L);
                 facture.setStatut(StatutFact.payer);
             } else {
                 // Paiement partiel

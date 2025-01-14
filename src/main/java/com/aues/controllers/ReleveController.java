@@ -1,5 +1,6 @@
 package com.aues.controllers;
 
+import com.aues.DTO.ReleveDto;
 import com.aues.ReleveRequest;
 import com.aues.entites.Releve;
 import com.aues.services.ReleveService;
@@ -18,10 +19,10 @@ public class ReleveController {
 
     // Endpoint pour ajouter un relevé
     @PostMapping
-    public ResponseEntity<String> ajouterReleve(@RequestBody ReleveRequest releveRequest) {
+    public ResponseEntity<String> ajouterReleve(@RequestBody ReleveDto releveRequest) {
         try {
             // Appeler le service pour ajouter le relevé
-            releveService.ajouterReleve(releveRequest.getNumero(), releveRequest.getUnite_consomme());
+            releveService.ajouterReleve(releveRequest);
             return ResponseEntity.ok("Relevé ajouté avec succès.");
         } catch (Exception e) {
             return ResponseEntity.status(400).body("Erreur : " + e.getMessage());

@@ -2,59 +2,66 @@ package com.aues.entites;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 
+import java.time.Instant;
 import java.util.Date;
 
+@AllArgsConstructor
+@NoArgsConstructor
 @Entity
 @Table(name = "Releve")
 public class Releve {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    public int id;
+    private Integer id;
 
     @Temporal(TemporalType.TIMESTAMP)
     @Column(nullable = false)
-    public Date date;
+    public Instant date = Instant.now();
 
     @Column(nullable = false)
     public Double unite_consomme;
 
-    public Double tarif=250.5;
 
-    private String numero_compteur;
+    public Double ValLorsRelev;
+
+    private Double tarif;;
+
 
     @ManyToOne
     @JoinColumn(name = "compteur_id", nullable = false) // Crée une clé étrangère vers la table Compteur
     @JsonBackReference
     private Compteur compteur;
 
+    @OneToOne(mappedBy = "releve")
+    @JoinColumn(name = "Facture")
+    private Facture facture;
 
-    public Releve() {
-        this.date = new Date();
+
+    public Double getValLorsRelev() {
+        return ValLorsRelev;
     }
 
-    public Releve(int id, Date date, Double unite_consomme, Double tarif, Compteur compteur, String numero_compteur) {
-        this.id = id;
-        this.date = date;
-        this.unite_consomme = unite_consomme;
-        this.tarif = tarif;
-        this.compteur = compteur;
-        this.numero_compteur = numero_compteur;
+    public void setValLorsRelev(Double valActu) {
+        this.ValLorsRelev = valActu;
     }
 
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
-    public Date getDate() {
+    public Instant getDate() {
         return date;
     }
 
-    public void setDate(Date date) {
+    public void setDate(Instant date) {
         this.date = date;
     }
 
@@ -74,6 +81,14 @@ public class Releve {
         this.tarif = tarif;
     }
 
+    public Facture getFacture() {
+        return facture;
+    }
+
+    public void setFacture(Facture facture) {
+        this.facture = facture;
+    }
+
     public Compteur getCompteur() {
         return compteur;
     }
@@ -82,11 +97,5 @@ public class Releve {
         this.compteur = compteur;
     }
 
-    public String getNumero_compteur() {
-        return numero_compteur;
-    }
 
-    public void setNumero_compteur(String numero_compteur) {
-        this.numero_compteur = numero_compteur;
-    }
 }

@@ -1,7 +1,9 @@
 package com.aues.DTO;
 
 import com.aues.entites.Facture;
+import com.aues.entites.Releve;
 import com.aues.entites.StatutFact;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -13,7 +15,9 @@ public class FactureDto {
     private Integer id;
     private String dateTrs;
     private StatutFact statut;
-    private Integer montantTotal;
+    private Long montantTotal;
+    @JsonIgnore
+    private Releve releve;
 
     public  FactureDto(){}
 
@@ -40,6 +44,7 @@ public class FactureDto {
             facture.setId(dto.getId());
             facture.setStatut(dto.getStatut());
             facture.setMontantTotal(dto.getMontantTotal());
+            facture.setReleve(dto.getReleve());
             return facture;
         } return null;
     }
@@ -57,9 +62,10 @@ public class FactureDto {
         return statut;
     }
 
-    public Integer getMontantTotal() {
+    public Long getMontantTotal() {
         return montantTotal;
     }
+
 
     public void setId(Integer id) {
         this.id = id;
@@ -73,8 +79,17 @@ public class FactureDto {
         this.statut = statut;
     }
 
-    public void setMontantTotal(Integer montantTotal) {
+    public void setMontantTotal(Long montantTotal) {
         this.montantTotal = montantTotal;
+    }
+
+
+    public Releve getReleve() {
+        return releve;
+    }
+
+    public void setReleve(Releve releve) {
+        this.releve = releve;
     }
 
 

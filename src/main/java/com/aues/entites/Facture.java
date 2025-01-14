@@ -17,17 +17,20 @@ public class Facture extends EntiteAbstrait {
     protected StatutFact statut;
 
     @Column(name = "Montant")
-    private Integer montantTotal;
+    private Long montantTotal;
 
     @OneToMany(mappedBy = "Facture",
             cascade = CascadeType.ALL)
     private List<Payement> payementlist;
 
+    @OneToOne(cascade = CascadeType.ALL)
+    private Releve releve;
+
     public StatutFact getStatut() {
         return statut;
     }
 
-    public Integer getMontantTotal() {
+    public Long getMontantTotal() {
         return montantTotal;
     }
 
@@ -35,11 +38,19 @@ public class Facture extends EntiteAbstrait {
         return payementlist;
     }
 
+    public Releve getReleve() {
+        return releve;
+    }
+
+    public void setReleve(Releve releve) {
+        this.releve = releve;
+    }
+
     public void setStatut(StatutFact statut) {
         this.statut = statut;
     }
 
-    public void setMontantTotal(Integer montantTotal) {
+    public void setMontantTotal(Long montantTotal) {
         this.montantTotal = montantTotal;
     }
 

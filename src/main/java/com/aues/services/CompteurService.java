@@ -1,7 +1,6 @@
 package com.aues.services;
 
 import com.aues.entites.Compteur;
-import com.aues.entites.Releve;
 import com.aues.repositories.CompteurRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -39,12 +38,20 @@ public class CompteurService {
     public Compteur modiffier(int id, Compteur compteur){
         Compteur compteurbd= this.chercher(id);
         if(compteurbd!=null){
-            compteurbd.setNumero(compteur.getNumero());
+            compteurbd.setCode(compteur.getCode());
             compteurbd.setStatut(compteur.getStatut());
             this.compteurRepository.save(compteurbd);
         }
         return compteurbd;
     }
+
+    public Compteur ChercherCode(String code){
+        if(code!=null){
+            return compteurRepository.findCompteurByCode(code);
+        }
+        return null;
+ }
+
     public Compteur supprimer(int id ){
         Compteur compteurbd =this.chercher(id);
         if (compteurbd!=null){
