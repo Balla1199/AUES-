@@ -41,6 +41,9 @@ public class ReleveService {
     public ReleveDto ajouterReleve(ReleveDto dto) {
         if (dto != null ) {
             Compteur compteur = compteurService.ChercherCode(dto.getNumero_compteur());
+            if (compteur.getStatut()==TypeStatut.Inactive){
+                throw new RuntimeException("le statut du compteur est : " + compteur.getStatut());
+            }
             if (compteur == null) {
                 throw new RuntimeException("Compteur non trouvé avec le numéro : " + dto.getNumero_compteur());
             }
