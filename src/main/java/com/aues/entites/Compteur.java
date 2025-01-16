@@ -1,6 +1,7 @@
 package com.aues.entites;
 
 import com.aues.TypeStatut;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 
@@ -28,15 +29,30 @@ public class Compteur {
     @JsonManagedReference
     private List<Releve> releve = new ArrayList<>();
 
+    @ManyToOne
+    @JoinColumn(name = "utilisateur_id")
+    @JsonBackReference
+
+    private Utilisateur utilisateur;
+
     public Compteur() {
 
     }
 
-    public Compteur(int id, String code, TypeStatut statut, List<Releve> releve) {
+    public Compteur(int id, String code, TypeStatut statut, List<Releve> releve, Utilisateur utilisateur) {
         this.id = id;
         this.code = code;
         this.statut = statut;
         this.releve = releve;
+        this.utilisateur = utilisateur;
+    }
+
+    public Utilisateur getUtilisateur() {
+        return utilisateur;
+    }
+
+    public void setUtilisateur(Utilisateur utilisateur) {
+        this.utilisateur = utilisateur;
     }
 
     public int getId() {

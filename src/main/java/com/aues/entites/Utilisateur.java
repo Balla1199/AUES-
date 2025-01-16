@@ -30,15 +30,31 @@ public class Utilisateur implements UserDetails {
     private Role role;
 
 
+
+    @OneToMany(mappedBy = "utilisateur", cascade = CascadeType.ALL, orphanRemoval = true)
+
+    private List<Compteur> compteurs = new ArrayList<>();
+
+
     public Utilisateur() {}
 
-    public Utilisateur(String telephone, String password, Role role) {
+    public Utilisateur(String telephone, String password, Role role, List<Compteur> compteurs) {
         this.telephone = telephone;
         this.password = password;
         this.role = role;
+        this.compteurs = compteurs;
     }
 
     // Getters et setters
+
+
+    public List<Compteur> getCompteurs() {
+        return compteurs;
+    }
+
+    public void setCompteurs(List<Compteur> compteurs) {
+        this.compteurs = compteurs;
+    }
 
     public String getNom() {
         return nom;

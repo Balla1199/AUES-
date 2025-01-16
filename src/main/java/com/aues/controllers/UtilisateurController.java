@@ -1,6 +1,8 @@
 package com.aues.controllers;
 
 import com.aues.DTO.AuthenticationDTO;
+import com.aues.DTO.UtilisateurDTO;
+import com.aues.entites.Compteur;
 import com.aues.entites.Role;
 import com.aues.entites.Utilisateur;
 import com.aues.repositories.UtilisateurRepository;
@@ -17,6 +19,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -51,7 +54,7 @@ public class UtilisateurController {
     }
 
     @PostMapping("/inscrire")
-    public ResponseEntity<String> inscrire(@RequestBody Utilisateur utilisateur) {
+    public ResponseEntity<String> inscrire(@RequestBody UtilisateurDTO utilisateur) {
 
         // Récupérer l'utilisateur connecté
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -66,5 +69,11 @@ public class UtilisateurController {
         utilisateur.setPassword(bCryptPasswordEncoder.encode(utilisateur.getPassword()));
         utilisateurService.ajouterUtilisateur(utilisateur);
         return new ResponseEntity<>("Utilisateur inscrit avec succès.", HttpStatus.CREATED);
+    }
+
+    @GetMapping("/afficher")
+    public ResponseEntity<List<Utilisateur>> afficher() {
+        List<Utilisateur> utilisateurs = this.utilisateurService.afficher();
+        return ResponseEntity.ok(utilisateurs);
     }
 }

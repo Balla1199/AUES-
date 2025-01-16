@@ -28,6 +28,7 @@ public class AdminInitializationService {
             admin.setTelephone("0123456789");
             admin.setPassword(passwordEncoder.encode("admin123"));
             admin.setRole(Role.ADMINISTRATEUR);
+            //admin.setCompteur(null);
 
             utilisateurRepository.save(admin);
             System.out.println("Administrateur par défaut créé !");

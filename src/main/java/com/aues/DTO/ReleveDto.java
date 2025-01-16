@@ -20,6 +20,8 @@ public class ReleveDto {
     private String numero_compteur;
     @JsonIgnore
     private Facture facture;
+    @JsonIgnore
+    private Compteur compteur;
 
     public  ReleveDto(){}
 
@@ -36,6 +38,7 @@ public class ReleveDto {
             releveDto.setValLorsRelev(relev.getValLorsRelev());
             releveDto.setNumero_compteur(releveDto.getNumero_compteur());
             releveDto.setFacture(relev.getFacture());
+            releveDto.setCompteur(relev.getCompteur());
             return releveDto;
         } return null;
     }
@@ -56,9 +59,13 @@ public class ReleveDto {
     }
 
 
+    public Compteur getCompteur() {
+        return compteur;
+    }
 
-
-
+    public void setCompteur(Compteur compteur) {
+        this.compteur = compteur;
+    }
 
     public Integer getId() {
         return id;

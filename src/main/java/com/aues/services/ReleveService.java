@@ -2,6 +2,7 @@ package com.aues.services;
 
 import com.aues.DTO.FactureDto;
 import com.aues.DTO.ReleveDto;
+import com.aues.TypeStatut;
 import com.aues.entites.Compteur;
 import com.aues.entites.Releve;
 import com.aues.entites.StatutFact;
@@ -38,7 +39,7 @@ public class ReleveService {
 
     @Transactional
     public ReleveDto ajouterReleve(ReleveDto dto) {
-        if (dto != null) {
+        if (dto != null ) {
             Compteur compteur = compteurService.ChercherCode(dto.getNumero_compteur());
             if (compteur == null) {
                 throw new RuntimeException("Compteur non trouvé avec le numéro : " + dto.getNumero_compteur());
