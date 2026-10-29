@@ -39,6 +39,8 @@ public class SecuriteConfigurationApplication {
                                         authorize
                                                 .requestMatchers(POST,"/inscription").permitAll()
                                                 .requestMatchers(POST,"/connexion").permitAll()
+                                                // Vues web pour les agents (navigateur)
+                                                .requestMatchers("/", "/web/**", "/error").permitAll()
 
                                                 .anyRequest().authenticated()
                         )

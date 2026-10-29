@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments :: en-tete('Facture — AUES', 'factures')}"></head>
+<body th:replace="~{fragments :: menu('factures')}">
+<div class="conteneur" th:if="${facture != null}">
+    <h1 th:text="'Facture ' + ${facture.numero}">Facture</h1>
+
+    <div th:if="${erreur}" class="erreur" th:text="${erreur}">erreur</div>
+
+    <table>
+        <tr><th style="width:220px;">Numéro</th><td th:text="${facture.numero}"></td></tr>
+        <tr><th>Compteur</th><td th:text="${facture.numero_compteur}"></td></tr>
+        <tr><th>Date d'émission</th><td th:text="${#dates.format(facture.date_emission, 'dd/MM/yyyy')}"></td></tr>
+        <tr><th>Échéance</th>
+            <td th:text="${facture.date_echeance != null ? #dates.format(facture.date_echeance, 'dd/MM/yyyy') : '—'}"></td></tr>
+        <tr><th>Unités consommées</th><td th:text="${facture.releve != null ? facture.releve.unite_consomme + ' m³' : '—'}"></td></tr>
+        <tr><th>Montant total</th>
+            <td th:text="${#numbers.formatDecimal(facture.montant, 1, 'COMMA', 2, 'POINT')} + ' FCFA'"></td></tr>
+        <tr><th>Déjà payé</th>
+            <td th:text="${#numbers.formatDecimal(facture.montant_paye, 1, 'COMMA', 2, 'POINT')} + ' FCFA'"></td></tr>
+        <tr><th>Reste à payer</th>
+            <td><strong th:text="${#numbers.formatDecimal(facture.montantRestant(), 1, 'COMMA', 2, 'POINT')} + ' FCFA'"></strong></td></tr>
+        <tr><th>Statut</th>
+            <td>
+                <span class="badge-payee" th:if="${facture.statut.name() == 'Payee'}">Payée</span>
+                <span class="badge-impayee" th:if="${facture.statut.name() == 'Impayee'}">Impayée</span>
+            </td>
+        </tr>
+    </table>
+
+    <h2>Reçu / relance</h2>
+    <table th:if="${not #lists.isEmpty(payements)}">
+        <tr><th>Date</th><th>Montant</th><th>Mode</th><th>Payeur</th></tr>
+        <tr th:each="payement : ${payements}">
+            <td th:text="${#dates.format(payement.date, 'dd/MM/yyyy')}">—</td>
+            <td th:text="${#numbers.formatDecimal(payement.montant, 1, 'COMMA', 2, 'POINT')} + ' FCFA'">—</td>
+            <td th:text="${payement.mode.name()}">—</td>
+            <td th:text="${payement.payeur ?: '—'}">—</td>
+        </tr>
+    </table>
+    <p th:unless="${not #lists.isEmpty(payements)}">Aucun paiement enregistré sur cette facture.</p>
+
+    <h2>Enregistrer un paiement</h2>
+    <form class="ligne" th:action="@{'/web/factures/' + ${facture.id} + '/payer'}" method="post"
+          th:if="${facture.statut.name() == 'Impayee'}">
+        <div>
+            <label>Montant (FCFA)</label><br>
+            <input type="number" name="montant"
+                   th:value="${#numbers.formatDecimal(facture.montantRestant(), 1, 'COMMA', 2, 'POINT').replaceAll(',','')}"
+                   step="0.01" min="0.01" required>
+        </div>
+        <div>
+            <label>Mode</label><br>
+            <select name="mode" required>
+                <option th:each="m : ${modes}" th:value="${m.name()}" th:text="${m.name()}">Especes</option>
+            </select>
+        </div>
+        <div>
+            <label>Payeur</label><br>
+            <input type="text" name="payeur" placeholder="Nom du payeur">
+        </div>
+        <button class="btn" type="submit">Enregistrer le paiement</button>
+    </form>
+
+    <p><a class="lien" th:href="@{/web/factures}">← Retour aux factures</a></p>
+
+    <div th:replace="~{fragments :: pied}"></div>
+</div>
+</body>
+</html>

@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments :: en-tete('Factures — AUES', 'factures')}"></head>
+<body th:replace="~{fragments :: menu('factures')}">
+<div class="conteneur">
+    <h1>Factures</h1>
+
+    <table th:if="${not #lists.isEmpty(factures)}">
+        <tr>
+            <th>N° facture</th>
+            <th>Compteur</th>
+            <th>Émission</th>
+            <th>Échéance</th>
+            <th>Montant</th>
+            <th>Payé</th>
+            <th>Reste</th>
+            <th>Statut</th>
+        </tr>
+        <tr th:each="facture : ${factures}">
+            <td><a class="lien" th:href="@{'/web/factures/' + ${facture.id}}" th:text="${facture.numero}">FACT-001</a></td>
+            <td th:text="${facture.numero_compteur}">CPT-01</td>
+            <td th:text="${#dates.format(facture.date_emission, 'dd/MM/yyyy')}">01/10/2026</td>
+            <td th:text="${facture.date_echeance != null ? #dates.format(facture.date_echeance, 'dd/MM/yyyy') : '—'}">31/10/2026</td>
+            <td th:text="${#numbers.formatDecimal(facture.montant, 1, 'COMMA', 2, 'POINT')} + ' FCFA'">0</td>
+            <td th:text="${#numbers.formatDecimal(facture.montant_paye, 1, 'COMMA', 2, 'POINT')} + ' FCFA'">0</td>
+            <td th:text="${#numbers.formatDecimal(facture.montantRestant(), 1, 'COMMA', 2, 'POINT')} + ' FCFA'">0</td>
+            <td>
+                <span class="badge-payee" th:if="${facture.statut.name() == 'Payee'}">Payée</span>
+                <span class="badge-impayee" th:if="${facture.statut.name() == 'Impayee'}">Impayée</span>
+            </td>
+        </tr>
+    </table>
+    <p th:unless="${not #lists.isEmpty(factures)}">
+        Aucune facture. Elles sont générées depuis l'API :
+        <code>POST /factures/generer/{releveId}</code>
+    </p>
+
+    <div th:replace="~{fragments :: pied}"></div>
+</div>
+</body>
+</html>

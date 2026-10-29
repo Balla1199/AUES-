@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<!-- Fragment commun : doctype, en-tête et style partagés par toutes les vues. -->
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+<head th:fragment="en-tete(titre, onglet)">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${titre} ?: 'AUES'">AUES</title>
+    <style>
+        :root { --vert: #2e7d32; --gris: #f4f6f8; }
+        * { box-sizing: border-box; }
+        body { font-family: Arial, sans-serif; margin: 0; background: var(--gris); color: #1a2e1a; }
+        header { background: var(--vert); color: white; padding: 12px 24px; display: flex; gap: 24px; align-items: center; }
+        header a { color: #cfe3cf; text-decoration: none; font-weight: bold; }
+        header a.actif { color: white; border-bottom: 2px solid white; }
+        .conteneur { max-width: 1100px; margin: 24px auto; padding: 0 16px; }
+        .cartes { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 14px; margin-bottom: 22px; }
+        .carte { background: white; border-radius: 10px; padding: 16px 20px; box-shadow: 0 1px 3px rgba(0,0,0,.12); }
+        .carte .valeur { font-size: 26px; font-weight: bold; color: var(--vert); }
+        .carte .libelle { color: #61705f; font-size: 13px; margin-top: 4px; }
+        table { width: 100%; border-collapse: collapse; background: white; border-radius: 10px; overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,.12); margin-bottom: 22px; }
+        th { background: var(--vert); color: white; text-align: left; padding: 10px 14px; font-size: 14px; }
+        td { padding: 9px 14px; border-top: 1px solid #e5e9e6; font-size: 14px; }
+        .badge-payee { background: #d7ecd7; color: #1b5e20; padding: 3px 10px; border-radius: 12px; font-size: 12px; }
+        .badge-impayee { background: #fde4d0; color: #b34a00; padding: 3px 10px; border-radius: 12px; font-size: 12px; }
+        .btn { background: var(--vert); color: white; border: none; padding: 9px 16px; border-radius: 8px; cursor: pointer; font-size: 14px; }
+        .erreur { background: #fde4d0; color: #8a2b00; padding: 10px 14px; border-radius: 8px; margin-bottom: 12px; }
+        h1 { font-size: 21px; margin: 18px 0 12px; }
+        h2 { font-size: 17px; margin: 20px 0 8px; }
+        a.lien { color: var(--vert); text-decoration: none; }
+        form.ligne { display: flex; gap: 10px; flex-wrap: wrap; align-items: end; background: white; padding: 14px; border-radius: 10px; box-shadow: 0 1px 3px rgba(0,0,0,.12); margin-bottom: 22px; }
+        form.ligne label { display: block; font-size: 12px; color: #61705f; margin-bottom: 4px; }
+        form.ligne input, form.ligne select { padding: 8px; border: 1px solid #c3d0c3; border-radius: 6px; font-size: 14px; }
+    </style>
+</head>
+<body>
+<header th:fragment="menu(onglet)">
+    <strong>💧 AUES</strong>
+    <a th:href="@{/web/tableau-de-bord}" th:classappend="${onglet} == 'tableau' ? 'actif'">Tableau de bord</a>
+    <a th:href="@{/web/factures}" th:classappend="${onglet} == 'factures' ? 'actif'">Factures</a>
+    <a th:href="@{/web/payements}" th:classappend="${onglet} == 'payements' ? 'actif'">Paiements</a>
+    <span style="margin-left:auto; font-size:13px; color:#cfe3cf;">Gestion du château d'eau</span>
+</header>
+<div th:fragment="pied" class="conteneur" style="margin-top:34px; color:#61705f; font-size:12px;">
+    AUES — Gestion de château d'eau (Spring Boot + Thymeleaf)
+</div>
+</body>
+</html>

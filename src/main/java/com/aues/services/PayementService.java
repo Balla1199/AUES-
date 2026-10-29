@@ -37,6 +37,10 @@ public class PayementService {
         if (facture.getStatut() == com.aues.StatutFacture.Payee) {
             throw new RuntimeException("La facture " + facture.getNumero() + " est déjà entièrement payée.");
         }
+        if (montant > facture.montantRestant()) {
+            throw new RuntimeException("Le montant dépasse le reste à payer ("
+                    + facture.montantRestant() + " FCFA) pour la facture " + facture.getNumero() + ".");
+        }
 
         Payement payement = new Payement();
         payement.setFacture(facture);

@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments :: en-tete('Tableau de bord — AUES', 'tableau')}"></head>
+<body th:replace="~{fragments :: menu('tableau')}">
+<div class="conteneur">
+    <h1>Tableau de bord</h1>
+
+    <div class="cartes">
+        <div class="carte">
+            <div class="valeur" th:text="${stats['nbCompteurs']}">0</div>
+            <div class="libelle">Compteurs enregistrés</div>
+        </div>
+        <div class="carte">
+            <div class="valeur" th:text="${stats['uniteConsommees']}">0</div>
+            <div class="libelle">Unités d'eau consommées (m³)</div>
+        </div>
+        <div class="carte">
+            <div class="valeur"><span th:text="${#numbers.formatDecimal(stats['recettesTotales'], 1, 'COMMA', 2, 'POINT')}">0</span> FCFA</div>
+            <div class="libelle">Recettes encaissées</div>
+        </div>
+        <div class="carte">
+            <div class="valeur"><span th:text="${#numbers.formatDecimal(stats['montantImpaye'], 1, 'COMMA', 2, 'POINT')}">0</span> FCFA</div>
+            <div class="libelle">Montant impayé</div>
+        </div>
+        <div class="carte">
+            <div class="valeur" th:text="${stats['tauxRecouvrement']} + '%'">0%</div>
+            <div class="libelle">Taux de recouvrement</div>
+        </div>
+    </div>
+
+    <h2>Recettes par mois</h2>
+    <table th:if="${not #maps.isEmpty(stats['recettesParMois'])}">
+        <tr><th>Mois</th><th>Recettes (FCFA)</th></tr>
+        <tr th:each="entree : ${stats['recettesParMois']}">
+            <td th:text="${entree.key}">2026-10</td>
+            <td th:text="${#numbers.formatDecimal(entree.value, 1, 'COMMA', 2, 'POINT')}">0</td>
+        </tr>
+    </table>
+    <p th:unless="${not #maps.isEmpty(stats['recettesParMois'])}">Aucun paiement enregistré pour le moment.</p>
+
+    <h2>Consommation par mois</h2>
+    <table th:if="${not #maps.isEmpty(stats['consommationParMois'])}">
+        <tr><th>Mois</th><th>Consommation (m³)</th></tr>
+        <tr th:each="entree : ${stats['consommationParMois']}">
+            <td th:text="${entree.key}">2026-10</td>
+            <td th:text="${#numbers.formatDecimal(entree.value, 1, 'COMMA', 2, 'POINT')}">0</td>
+        </tr>
+    </table>
+    <p th:unless="${not #maps.isEmpty(stats['consommationParMois'])}">Aucun relevé enregistré pour le moment.</p>
+
+    <div th:replace="~{fragments :: pied}"></div>
+</div>
+</body>
+</html>
