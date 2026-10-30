@@ -1,66 +1,56 @@
 package com.aues.entites;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
 
-import java.time.Instant;
+import java.math.BigDecimal;
 
-
-@AllArgsConstructor
-@NoArgsConstructor
+/** Versement sur une facture : validé (Effectuer) ou annulé (Annule). */
 @Entity
+@Table(name = "Payement")
 public class Payement extends EntiteAbstrait {
 
-    @Column(name = "Date")
-    private Instant date = Instant.now();
+    @Column(nullable = false, precision = 10, scale = 2)
+    private BigDecimal montant = BigDecimal.ZERO;
 
-    @Column(name = "Montant")
-    private Integer montant;
-
-    @Column(name = "Mode")
     @Enumerated(EnumType.STRING)
-    protected ModePayement mode;
+    @Column(nullable = false)
+    private ModePayement mode = ModePayement.Especes;
 
-    @Column(name = "Statuts")
     @Enumerated(EnumType.STRING)
-    protected StatutPay statutPay;
+    @Column(nullable = false)
+    private StatutPay statutPay = StatutPay.Effectuer;
+
+    /** Nom du payeur (client, agent…), information libre. */
+    private String payeur;
 
     @ManyToOne
-    @JoinColumn(name = "idFacture")
-    private Facture Facture;
+    @JoinColumn(name = "facture_id", nullable = false)
+    @JsonBackReference
+    private Facture facture;
 
-
-    public Instant getDate() {
-        return date;
+    public Payement() {
+        // createDate/modifieDate initialisées par défaut dans EntiteAbstrait.
     }
 
-    public Integer getMontant() {
+    // ------------------------------------------------------------------
+    // Getters / setters
+    // ------------------------------------------------------------------
+
+    public BigDecimal getMontant() {
         return montant;
+    }
+
+    public void setMontant(BigDecimal montant) {
+        this.montant = montant;
     }
 
     public ModePayement getMode() {
         return mode;
     }
 
-    public Facture getFacture() {
-        return Facture;
-    }
-
-    public void setDate(Instant date) {
-        this.date = date;
-    }
-
-    public void setMontant(Integer montant) {
-        this.montant = montant;
-    }
-
     public void setMode(ModePayement mode) {
         this.mode = mode;
-    }
-
-    public void setFacture(Facture facture) {
-        Facture = facture;
     }
 
     public StatutPay getStatutPay() {
@@ -69,5 +59,21 @@ public class Payement extends EntiteAbstrait {
 
     public void setStatutPay(StatutPay statutPay) {
         this.statutPay = statutPay;
+    }
+
+    public String getPayeur() {
+        return payeur;
+    }
+
+    public void setPayeur(String payeur) {
+        this.payeur = payeur;
+    }
+
+    public Facture getFacture() {
+        return facture;
+    }
+
+    public void setFacture(Facture facture) {
+        this.facture = facture;
     }
 }

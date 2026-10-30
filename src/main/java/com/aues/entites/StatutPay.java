@@ -1,4 +1,7 @@
 package com.aues.entites;
 
-public enum StatutPay {effectuer,annuler
+/** Statut d'un versement : validé ou annulé (trace conservée). */
+public enum StatutPay {
+    Effectuer,
+    Annule;
 }

@@ -8,17 +8,17 @@ import java.util.List;
 
 public class Factureverify {
 
-    public static List<String> verify(FactureDto factureDto){
+    public static List<String> verify(FactureDto factureDto) {
+        List<String> errors = new ArrayList<>();
 
-        List<String> error = new ArrayList<>();
-
-        if (factureDto==null){
-            error.add("Veuillez renseignez les informations de la facture");
-        }else {
-            if (StringUtils.isEmpty(String.valueOf(factureDto.getMontantTotal())))
-                error.add("Veuillez donnez le montant");
+        if (factureDto == null) {
+            errors.add("Veuillez renseigner les informations de la facture");
+        } else {
+            if (factureDto.getMontant() == null
+                    || factureDto.getMontant().compareTo(java.math.BigDecimal.ZERO) <= 0) {
+                errors.add("Veuillez donner un montant strictement positif");
+            }
         }
-
-        return error;
+        return errors;
     }
 }

@@ -4,8 +4,10 @@ import com.aues.services.AdminInitializationService;
 import jakarta.annotation.PostConstruct;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 
 @SpringBootApplication
+@EnableJpaAuditing   // active createDate / modifieDate de EntiteAbstrait
 public class AuesApplication {
 	private final AdminInitializationService adminInitializationService;
 

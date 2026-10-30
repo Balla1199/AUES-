@@ -37,7 +37,6 @@ public class Releve {
     private Compteur compteur;
 
     @OneToOne(mappedBy = "releve")
-    @JoinColumn(name = "Facture")
     private Facture facture;
 
 

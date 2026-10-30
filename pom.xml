@@ -25,6 +25,12 @@
 			<artifactId>spring-boot-starter-web</artifactId>
 		</dependency>
 
+		<!-- Vues web côté agent (Thymeleaf, URLs /web/**) -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-thymeleaf</artifactId>
+		</dependency>
+
 		<!-- Dépendance pour Spring Boot Security (pour l'authentification) -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>

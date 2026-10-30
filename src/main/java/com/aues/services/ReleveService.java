@@ -1,17 +1,11 @@
 package com.aues.services;
 
-import com.aues.DTO.FactureDto;
 import com.aues.DTO.ReleveDto;
 import com.aues.TypeStatut;
 import com.aues.entites.Compteur;
 import com.aues.entites.Releve;
-import com.aues.entites.StatutFact;
 import com.aues.repositories.CompteurRepository;
 import com.aues.repositories.ReleveRepository;
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
-import net.bytebuddy.implementation.bytecode.Throw;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,20 +15,21 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-@AllArgsConstructor
-@NoArgsConstructor
 public class ReleveService {
 
-    private ReleveRepository releveRepository;
-    private CompteurRepository compteurRepository;
+    private final ReleveRepository releveRepository;
+    private final CompteurRepository compteurRepository;
+    private final CompteurService compteurService;
+    private final FactureService factureService;
 
-    @Autowired
-    private  CompteurService compteurService;
-    @Autowired
-    private FactureService factureService;
-
-    public ReleveService(ReleveRepository releveRepository) {
+    public ReleveService(ReleveRepository releveRepository,
+                         CompteurRepository compteurRepository,
+                         CompteurService compteurService,
+                         FactureService factureService) {
         this.releveRepository = releveRepository;
+        this.compteurRepository = compteurRepository;
+        this.compteurService = compteurService;
+        this.factureService = factureService;
     }
 
     @Transactional
@@ -51,11 +46,10 @@ public class ReleveService {
             releve.setCompteur(compteur);
             releve.setUnite_consomme((dto.getValLorsRelev() - compteur.getCpteurChiffre()));
             releve = releveRepository.save(releve);
-            FactureDto factureDto = new FactureDto();
-            factureDto.setStatut(StatutFact.nopayer);
-            factureDto.setMontantTotal(Math.round(releve.getUnite_consomme() * releve.getTarif()));
-            factureDto.setReleve(releve);
-            factureService.save(factureDto);
+
+            // Facture générée selon la conception fusion (montant = unités × tarif,
+            // numérotation, échéance) — une seule facture par relevé.
+            factureService.generer(releve.getId());
 
             compteur.setCpteurChiffre(dto.getValLorsRelev());
             compteur.getReleve().add(releve);

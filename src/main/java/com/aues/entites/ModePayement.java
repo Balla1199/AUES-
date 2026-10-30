@@ -1,3 +1,12 @@
 package com.aues.entites;
 
-public enum ModePayement {physique ,mobile}
+/**
+ * Modes de paiement acceptés par l'AUES.
+ * (anciens codes de la brancheérieure : physique -> Especes, mobile -> MobileMoney)
+ */
+public enum ModePayement {
+    Especes,
+    MobileMoney,
+    Virement,
+    Cheque;
+}

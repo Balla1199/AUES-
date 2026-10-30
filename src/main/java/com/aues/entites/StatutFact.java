@@ -1,4 +1,7 @@
 package com.aues.entites;
 
-public enum StatutFact {payer, nopayer
+/** Statut de règlement d'une facture (recalculé, jamais figé à la main). */
+public enum StatutFact {
+    Payee,
+    Impayee;
 }

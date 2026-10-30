@@ -25,6 +25,11 @@ public class FactureController implements FactureCtrlInterface {
     }
 
     @Override
+    public ResponseEntity<FactureDto> generer(Integer releveId) {
+        return ResponseEntity.ok(factureService.generer(releveId));
+    }
+
+    @Override
     public FactureDto findFact(Integer id) {
         return factureService.findByid(id);
     }

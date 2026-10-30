@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments :: en-tete('Paiements — AUES', 'payements')}"></head>
+<body>
+<header th:replace="~{fragments :: menu('payements')}"></header>
+<div class="conteneur">
+    <h1>Paiements enregistrés</h1>
+
+    <table th:if="${not #lists.isEmpty(payements)}">
+        <tr><th>N°</th><th>Date</th><th>Montant</th><th>Mode</th><th>Payeur</th><th>Facture</th></tr>
+        <tr th:each="payement : ${payements}">
+            <td th:text="${payement.id}">1</td>
+            <td th:text="${#temporals.format(payement.createDate, 'dd/MM/yyyy à HH:mm')}">—</td>
+            <td th:text="${#numbers.formatDecimal(payement.montant, 1, 'COMMA', 2, 'POINT')} + ' FCFA'">—</td>
+            <td th:text="${payement.mode.name()}">—</td>
+            <td th:text="${payement.payeur ?: '—'}">—</td>
+            <td>
+                <a class="lien" th:if="${payement.facture != null}"
+                   th:href="@{'/web/factures/' + ${payement.facture.id}}"
+                   th:text="${payement.facture.numero}">FACT-…</a>
+            </td>
+        </tr>
+    </table>
+    <p th:unless="${not #lists.isEmpty(payements)}">Aucun paiement enregistré pour le moment.</p>
+
+    <div th:replace="~{fragments :: pied}"></div>
+</div>
+</body>
+</html>

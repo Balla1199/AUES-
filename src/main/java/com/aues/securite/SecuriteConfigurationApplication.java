@@ -32,6 +32,7 @@ public class SecuriteConfigurationApplication {
                 .csrf((csrf) -> csrf.disable()) // Désactive CSRF de manière explicite dans certaines versions
                 .authorizeHttpRequests(authz -> authz
                         .requestMatchers( "/connexion").permitAll() // Permet l'accès sans authentification
+                        .requestMatchers("/", "/web/**", "/error").permitAll() // Vues web (Thymeleaf) sans JWT
                         .anyRequest().authenticated() // Toutes les autres requêtes nécessitent une authentification
                 )
                 .sessionManagement(session -> session

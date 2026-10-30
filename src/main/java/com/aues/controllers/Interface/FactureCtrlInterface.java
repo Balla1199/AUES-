@@ -13,6 +13,9 @@ public interface FactureCtrlInterface {
     @PostMapping(value = "/facture/save")
     ResponseEntity<FactureDto> Savefacture(@RequestBody FactureDto factureDto);
 
+    @PostMapping(value = "/facture/generer/{releveId}")
+    ResponseEntity<FactureDto> generer(@PathVariable("releveId") Integer releveId);
+
     @GetMapping(value = "/facture/search/{idfact}")
     FactureDto findFact (@PathVariable("idfact") Integer id);
 
